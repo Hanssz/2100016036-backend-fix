@@ -7,7 +7,8 @@ var cors = require('cors');
 var bodyParser = require('body-parser')
   // path = require('path');
 var mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://hanifamrinrasyada:20613100@cluster0.o3z6unp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true }, () => {
+// 
+mongoose.connect("mongodb+srv://hanifamrinrasyada:20613100@cluster0.o3z6unp.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true }, () => {
   console.log("Database mlaku")
 });
 var product = require("./model/product.js");
