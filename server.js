@@ -4,13 +4,12 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 // var multer = require('multer'),
-  bodyParser = require('body-parser'),
-  path = require('path');
+var bodyParser = require('body-parser')
+  // path = require('path');
 var mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://hanifamrinrasyada:20613100@cluster0.o3z6unp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true },() => {
+mongoose.connect("mongodb+srv://hanifamrinrasyada:20613100@cluster0.o3z6unp.mongodb.net/", { useNewUrlParser: true, useUnifiedTopology: true }, () => {
   console.log("Database mlaku")
 });
-var fs = require('fs');
 var product = require("./model/product.js");
 var user = require("./model/user.js");
 
@@ -36,7 +35,7 @@ var user = require("./model/user.js");
 //     callback(null, true)
 //   }
 // });
-app.use(cors());
+app.use(cors({ origin: "*" }));
 // app.use(express.static('uploads'));
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -81,8 +80,8 @@ app.post("/login", (req, res) => {
   try {
     if (req.body && req.body.username && req.body.password) {
       user.find({ username: req.body.username }, (err, data) => {
+        console.error(err)
         if (data.length > 0) {
-
           if (bcrypt.compareSync(data[0].password, req.body.password)) {
             checkUserAndGenerateToken(data[0], req, res);
           } else {
@@ -106,7 +105,8 @@ app.post("/login", (req, res) => {
         status: false
       });
     }
-  } catch (e) {
+  } catch (err) {
+    console.error(err)
     res.status(400).json({
       errorMessage: 'Something went wrong!',
       status: false
@@ -186,7 +186,7 @@ function checkUserAndGenerateToken(data, req, res) {
 app.post("/add-product", (req, res) => {
   console.log(req.body)
   try {
-    if ( req.body && req.body.name && req.body.desc && req.body.price &&
+    if (req.body && req.body.name && req.body.desc && req.body.price &&
       req.body.discount) {
 
       let new_product = new product();
@@ -331,7 +331,7 @@ app.get("/get-product", (req, res) => {
     }
     var perPage = 5;
     var page = req.query.page || 1;
-    product.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1, discount: 1})
+    product.find(query, { date: 1, name: 1, id: 1, desc: 1, price: 1, discount: 1 })
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
         product.find(query).count()
